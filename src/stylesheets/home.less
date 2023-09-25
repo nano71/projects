@@ -3,42 +3,41 @@
     flex-direction: column;
     justify-content: space-between;
 
-    .appIcon {
-        color: white;
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        align-items: center;
-        gap: 5rem;
-        width: 25%;
-        font-size: 14rem;
-
-        img {
-            border-radius: 8rem;
-            //background-color: #fff;
-            width: 48rem;
-            display: block;
-            box-sizing: border-box;
-            height: 48rem;
-        }
-    }
-
     .iconArea {
         flex: 1;
-        display: flex;
-        flex-wrap: wrap;
+        .swiperContainer {
+            height: 100%;
+
+            .content {
+                height: 574px;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                margin: 0 10px;
+                padding: 8px 11px 0;
+
+                .row {
+                    height: 99px;
+                    display: flex;
+                    justify-content: space-between;
+                }
+            }
+        }
+
     }
 
     .indicator {
+        height: 24px;
+        align-items: center;
         display: flex;
-        padding: 20rem 0;
         justify-content: center;
-        gap: 10rem;
+        gap: 6px;
 
         .dot {
-            width: 5rem;
-            height: 5rem;
-            border-radius: 10rem;
+            width: 6px;
+            height: 6px;
+            border-radius: 12px;
             background-color: #fff;
             opacity: .5;
 
@@ -49,33 +48,50 @@
     }
 
     .dockArea {
+        height: 153px;
         display: flex;
-        flex-wrap: wrap;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+
+        .apps {
+            display: flex;
+            //justify-content: center;
+            gap: 25px;
+            width: calc(4 * 66px + 3 * 25px);
+        }
 
         .appIcon {
+            width: 66px;
+            height: 75px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
             .appName {
                 display: none;
             }
         }
 
         .searchBar {
-            padding: 10rem;
-            width: 100%;
-            margin: 20rem calc((100% / 4 - 48rem) / 2);
-            border-radius: 50rem;
-            background-color: #f8f8f8;
+            padding: 0 16px;
+            box-sizing: border-box;
+            height: 51px;
+            width: 340px;
+            border-radius: 50px;
+            background-color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 5rem;
+            gap: 5px;
 
             svg {
-                width: 22rem !important;
-                height: 22rem !important;
+                width: 24px !important;
+                height: 24px !important;
             }
 
             input {
-                font-size: 14rem;
+                font-size: 14px;
                 flex: 1;
                 outline: 0;
                 border: 0;
@@ -83,6 +99,11 @@
                 padding: 0;
             }
         }
+    }
+
+
+    .bottomSafeArea {
+        height: 24px;
     }
 
 }

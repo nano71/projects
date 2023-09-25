@@ -2,7 +2,7 @@ html {
     padding: 0;
     margin: 0;
     background-color: #f8f8f8;
-    font-size: 1px;
+    font-size: 393px;
 
     body {
         margin: 0;
@@ -12,31 +12,12 @@ html {
         align-items: center;
 
         #root {
-            height: calc(100vh - 5vh);
+            min-width: 393px;
             box-sizing: border-box;
             @media (max-width: 400px) {
                 height: 100vh;
                 aspect-ratio: unset;
                 width: 100vw;
-            }
-        }
-
-        #face {
-            font-size: 16rem;
-            outline: 10rem solid white;
-            border: 1rem solid;
-            overflow: hidden;
-            position: relative;
-            height: 100%;
-            width: 100%;
-            box-sizing: border-box;
-            background-color: #f8f8f8;
-            border-radius: 42rem;
-            aspect-ratio: calc(393 / 853);
-            @media (max-width: 400px) {
-                border: 0;
-                border-radius: 0;
-                outline: 0;
             }
         }
     }

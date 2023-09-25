@@ -1,18 +1,17 @@
-import React, {useEffect} from "react";
+import {FC, ReactNode, useEffect} from "react";
 import "../stylesheets/global.less"
 import {useImmer} from "use-immer";
 import {Icon} from '@iconify/react';
 import "../stylesheets/face.less"
 
 interface FaceComponentProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
-const Face: React.FC<FaceComponentProps> = ({children}) => {
+const Face: FC<FaceComponentProps> = ({children}): ReactNode => {
 
     const [currentTime, updateTime] = useImmer("")
     useEffect(() => {
-        resize()
         setInterval(() => getTime(), 60000)
         getTime()
     });
@@ -24,19 +23,8 @@ const Face: React.FC<FaceComponentProps> = ({children}) => {
         updateTime(`${currentHour}:${currentMinute}`)
     }
 
-    window.onresize = function () {
-        resize()
-    }
-
-    function resize() {
-        if (innerWidth < 450)
-            return
-        document.querySelector("html")!.style.fontSize = 0.0013869626 * innerHeight + "px"
-    }
-
-
     return (
-        <div id="face">
+        <div id="face" className="rootFace">
             <div className="statusBar">
                 <div className="notices">
                     {currentTime}
@@ -49,9 +37,10 @@ const Face: React.FC<FaceComponentProps> = ({children}) => {
                     <Icon icon="tabler:battery-1-filled"/>
                 </div>
             </div>
-            <div className="dynamicIsland"></div>
             {children}
-            <div className="touchBar"/>
+            <div className="bottomNavArea">
+                <div className="touchNavBar"/>
+            </div>
         </div>
     );
 };

@@ -1,56 +1,81 @@
-#face {
+#face, .rootFace {
+    font-size: 16px;
+    outline: 10px solid white;
+    border: 1px solid;
+    overflow: hidden;
+    position: relative;
+    //height: 100%;
+    width: 100%;
+    //box-sizing: border-box;
+    background-color: #f8f8f8;
+    border-radius: 44px;
+    aspect-ratio: calc(1080 / 2340);
+    box-shadow: 0 4px 20px 0 #00000040;
+    @media (max-width: 400px) {
+        border: 0;
+        border-radius: 0;
+        outline: 0;
+    }
 
     .page {
-        padding-top: 60rem;
+        padding-top: 48px;
         box-sizing: border-box;
-        padding-bottom: 24rem;
+        padding-bottom: 24px;
         height: 100%;
         width: 100%;
     }
 
     svg {
-        width: 16rem;
-        height: 16rem;
+        width: 16px;
+        height: 16px;
     }
 
     .statusBar {
         position: absolute;
         align-items: center;
         top: 0;
-        height: 60rem;
+        height: 48px;
         width: 100%;
         display: flex;
         justify-content: space-between;
         color: white;
         box-sizing: border-box;
-        padding: 0 15rem;
+        padding: 2px 26px 0;
 
         svg {
-            width: 18rem;
-            height: 18rem;
+            width: 18px;
+            height: 18px;
         }
 
         .notices {
             display: flex;
             align-items: center;
-            gap: 5rem;
+            gap: 5px;
         }
 
         .status {
             display: flex;
             align-items: center;
-            gap: 2rem;
+            gap: 2px;
         }
     }
 
-    .touchBar {
+    .bottomNavArea {
         position: absolute;
-        bottom: 8rem;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 30%;
-        height: 6rem;
-        background-color: #fff;
-        border-radius: 50px;
+        bottom: 0;
+        width: 100%;
+        height: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .touchNavBar {
+            width: 108px;
+            height: 4px;
+            background-color: #fff;
+            border-radius: 8px;
+        }
     }
+
+
 }

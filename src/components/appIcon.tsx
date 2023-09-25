@@ -1,5 +1,5 @@
 import {ReactNode} from "react";
-
+import "../stylesheets/appIcon.less"
 function AppIcon(params: {
     name: string,
     icon: string
