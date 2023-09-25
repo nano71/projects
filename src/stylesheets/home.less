@@ -5,6 +5,7 @@
 
     .iconArea {
         flex: 1;
+
         .swiperContainer {
             height: 100%;
 
@@ -30,9 +31,18 @@
     .indicator {
         height: 24px;
         align-items: center;
+        margin: auto;
         display: flex;
-        justify-content: center;
-        gap: 6px;
+
+        .dotBox {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            transition: .2s;
+            opacity: 0;
+            border-radius: 12px;
+            position: relative;
+        }
 
         .dot {
             width: 6px;
@@ -43,6 +53,9 @@
 
             &.active {
                 opacity: 1;
+                position: absolute;
+                left: 0;
+                transition: .2s;
             }
         }
     }
@@ -83,9 +96,9 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 5px;
+            gap: 16px;
 
-            svg {
+            img {
                 width: 24px !important;
                 height: 24px !important;
             }
