@@ -77,7 +77,7 @@ export default function Home() {
                     <SwiperContainer>
                         <div className="content">
                             <div className="row">
-                                <AppIcon name="拨号" icon="" key={1}/>
+                                <AppIcon name="桂工助手N" icon={G} key={1}/>
                             </div>
                             <div className="row">
                             </div>

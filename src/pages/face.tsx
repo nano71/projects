@@ -2,6 +2,7 @@ import {FC, ReactNode, useEffect} from "react";
 import "../stylesheets/global.less"
 import {useImmer} from "use-immer";
 import {Icon} from '@iconify/react';
+import touchDot from "../assets/circle-filled.svg"
 import "../stylesheets/face.less"
 
 interface FaceComponentProps {
@@ -24,7 +25,9 @@ const Face: FC<FaceComponentProps> = ({children}): ReactNode => {
     }
 
     return (
-        <div id="face" className="rootFace">
+        <div id="face" className="rootFace" style={{
+            cursor:`url("${touchDot}") 16 16, auto`
+        }}>
             <div className="statusBar">
                 <div className="notices">
                     {currentTime}

@@ -12,6 +12,7 @@ type SwiperProps = {
 let currentIndex = 0,
     swiperWidth = 0,
     baseXPosition = 0,
+    baseYPosition = 0,
     canCaptureMouseMove = false,
     mouseStatus = "up"
 
@@ -28,8 +29,10 @@ export function Swiper({className, children}: SwiperProps): ReactNode {
 
     useEffect(() => {
         console.log(offset);
-        window.document.querySelector("html")!.onmouseup = (e) => onMouseUp(e.clientX)
-        window.document.querySelector("html")!.onmousemove = (e) => onMouseMove(e.clientX)
+        window.onmouseup = (e) => onMouseUp(e.clientX, e.clientY)
+        window.onmousemove = (e) => onMouseMove(e.clientX, e.clientY)
+        window.ontouchmove = (e) => onMouseMove(e.changedTouches[0].clientX, e.changedTouches[0].clientY)
+        window.ontouchend = (e) => onMouseUp(e.changedTouches[0].clientX, e.changedTouches[0].clientY)
     }, []);
 
 
@@ -37,30 +40,31 @@ export function Swiper({className, children}: SwiperProps): ReactNode {
         return currentIndex * swiperWidth
     }
 
-    function onMouseUp(clientX: number) {
+    function onMouseUp(clientX: number, clientY: number) {
         if (mouseStatus === "up")
             return
         mouseStatus = "up"
         console.log("onMouseUp");
-        const difference = baseXPosition - clientX
+        const differenceX = baseXPosition - clientX
+        const differenceY = baseYPosition - clientY
         canCaptureMouseMove = false
         setActive("active")
 
-        if (difference > (swiperWidth / 4) && currentIndex < swiperContainers.length - 1) {
+        if (differenceX > (swiperWidth / 4) && currentIndex < swiperContainers.length - 1) {
             console.log("next");
             currentIndex++
-        } else if (difference < -(swiperWidth / 4) && currentIndex > 0) {
+        } else if (differenceX < -(swiperWidth / 4) && currentIndex > 0) {
             console.log("previous");
             currentIndex--
         }
         hit()
     }
 
-    function onMouseMove(clientX: number) {
+    function onMouseMove(clientX: number, clientY: number) {
         if (!canCaptureMouseMove || mouseStatus === "up")
             return
         if (clientX > window.innerWidth - 20)
-            return onMouseUp(clientX)
+            return onMouseUp(clientX, clientY)
         let offset = -(baseXPosition - clientX)
         const scaleX = Math.abs(offset / 100000) + 1
         if (offset > 0 && currentIndex === 0) {
@@ -80,7 +84,6 @@ export function Swiper({className, children}: SwiperProps): ReactNode {
                 draft.transform = cssFormat(-(getCurrentOffset() - offset))
             })
         }
-
     }
 
     function cssFormat(offset: number, isHit: boolean = false): string {
@@ -90,11 +93,12 @@ export function Swiper({className, children}: SwiperProps): ReactNode {
         return `translateX(${offset}px)`
     }
 
-    function onMouseDown(clientX: number) {
+    function onMouseDown(clientX: number, clientY: number) {
         mouseStatus = "down"
         console.log("onMouseDown");
         swiperWidth = swiper.current!.clientWidth
         baseXPosition = clientX
+        baseYPosition = clientY
         canCaptureMouseMove = true
         setActive("")
     }
@@ -108,7 +112,12 @@ export function Swiper({className, children}: SwiperProps): ReactNode {
 
     return (
         <div className={className}>
-            <div className={"swiper " + activeClass} ref={swiper} style={moveDistance} onMouseDown={e => onMouseDown(e.clientX)}>
+            <div className={"swiper " + activeClass}
+                 ref={swiper}
+                 style={moveDistance}
+                 onMouseDown={e => onMouseDown(e.clientX, e.clientY)}
+                 onTouchStart={e => onMouseDown(e.touches[0].clientX, e.touches[0].clientY)}
+            >
                 {swiperContainers}
             </div>
         </div>
