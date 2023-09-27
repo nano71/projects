@@ -4,7 +4,7 @@ import {ReactElement, useEffect, useState} from "react";
 import "../stylesheets/home.less"
 import G from "../assets/20230925-G.png"
 import {Swiper, SwiperContainer} from "../components/swiper.tsx";
-import SwiperIndicator from "../context/swiperIndicator.tsx";
+import SwiperIndicator, {defaultData} from "../context/swiperIndicator.tsx";
 import {useImmer} from "use-immer";
 
 const pageStyle = {
@@ -21,13 +21,12 @@ export default function Home() {
         // <AppIcon name="拨号" icon=""/>,
         // <AppIcon name="拨号" icon=""/>
     ]
-    const [offset, setOffset] = useState(0)
+    const [offset, setOffset] = useState(defaultData.offset)
     const [indicatorOpacity, setOpacity] = useState(0)
     const [dotTransformStyle, setTransformStyle] = useImmer({
         transform: "translateX(0)",
         width: "6px"
     })
-
     useEffect(() => {
         function setWidth(width: number) {
             setTransformStyle(draft => {
@@ -41,8 +40,8 @@ export default function Home() {
             })
         }
 
-        const originalData = Math.abs(offset / 393)
-        const progress = Math.abs(offset / 393) % 1
+        const originalData = Math.abs(offset.x / 393)
+        const progress = Math.abs(offset.x / 393) % 1
         if (indicatorOpacity == 0) {
             if (progress > 0.02) {
                 setOpacity(1)

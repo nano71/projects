@@ -1,16 +1,16 @@
 import {createContext} from "react";
+import {Offset} from "../types.ts";
 
-type indicatorContext = {
-    offset: number,
-    setOffset: (offset: number) => void
+interface IndicatorContext {
+    offset: Offset,
+    setOffset: (offset: Offset) => void
 }
 
-const defaultData = {
-    offset: 0,
-    setOffset: (offset: number) => console.log("未提供, offset当前为:" + offset)
+export const defaultData = {
+    offset: {x: 0, y: 0}
 }
 
-const swiperIndicatorContext = createContext<indicatorContext>(defaultData)
+const swiperIndicatorContext = createContext<IndicatorContext>(defaultData as IndicatorContext)
 
 
 export default swiperIndicatorContext

@@ -2,6 +2,7 @@ import {Children, FC, isValidElement, ReactNode, useContext, useEffect, useRef, 
 import "../stylesheets/swiper.less"
 import {useImmer} from "use-immer";
 import swiperIndicatorContext from "../context/swiperIndicator.tsx";
+import faceElementInfoContext from "../context/faceElementInfo.ts";
 
 
 type SwiperProps = {
@@ -11,10 +12,11 @@ type SwiperProps = {
 
 let currentIndex = 0,
     swiperWidth = 0,
-    baseXPosition = 0,
-    baseYPosition = 0,
+    basePositionX = 0,
+    basePositionY = 0,
     canCaptureMouseMove = false,
-    mouseStatus = "up"
+    mouseStatus = "up",
+    movementDirection = ""
 
 export function Swiper({className, children}: SwiperProps): ReactNode {
     const swiper = useRef<HTMLDivElement>(null)
@@ -25,17 +27,18 @@ export function Swiper({className, children}: SwiperProps): ReactNode {
         transform: "unset"
     })
     const [activeClass, setActive] = useState("")
-    const {offset, setOffset} = useContext(swiperIndicatorContext)
+    const {setOffset} = useContext(swiperIndicatorContext)
+    const {clientRects} = useContext(faceElementInfoContext)
 
     useEffect(() => {
-        console.log(offset);
         window.onmouseup = (e) => onMouseUp(e.clientX, e.clientY)
         window.onmousemove = (e) => onMouseMove(e.clientX, e.clientY)
         window.ontouchmove = (e) => onMouseMove(e.changedTouches[0].clientX, e.changedTouches[0].clientY)
         window.ontouchend = (e) => onMouseUp(e.changedTouches[0].clientX, e.changedTouches[0].clientY)
     }, []);
-
-
+    useEffect(() => {
+        console.log(clientRects.top);
+    }, [clientRects.top]);
     function getCurrentOffset() {
         return currentIndex * swiperWidth
     }
@@ -43,13 +46,10 @@ export function Swiper({className, children}: SwiperProps): ReactNode {
     function onMouseUp(clientX: number, clientY: number) {
         if (mouseStatus === "up")
             return
-        mouseStatus = "up"
         console.log("onMouseUp");
-        const differenceX = baseXPosition - clientX
-        const differenceY = baseYPosition - clientY
-        canCaptureMouseMove = false
-        setActive("active")
 
+        const differenceX = basePositionX - clientX
+        setActive("active")
         if (differenceX > (swiperWidth / 4) && currentIndex < swiperContainers.length - 1) {
             console.log("next");
             currentIndex++
@@ -58,6 +58,10 @@ export function Swiper({className, children}: SwiperProps): ReactNode {
             currentIndex--
         }
         hit()
+
+        mouseStatus = "up"
+        movementDirection = ""
+        canCaptureMouseMove = false
     }
 
     function onMouseMove(clientX: number, clientY: number) {
@@ -65,25 +69,55 @@ export function Swiper({className, children}: SwiperProps): ReactNode {
             return
         if (clientX > window.innerWidth - 20)
             return onMouseUp(clientX, clientY)
-        let offset = -(baseXPosition - clientX)
-        const scaleX = Math.abs(offset / 100000) + 1
-        if (offset > 0 && currentIndex === 0) {
-            const slightOffset = offset / 30
-            setDistance(draft => {
-                draft.transform = `scaleX(${scaleX}) translateX(${slightOffset}px)`
-            })
-        } else if (offset < 0 && currentIndex === swiperContainers.length - 1) {
-            offset = -offset
-            const slightOffset = -(getCurrentOffset() + offset / 30)
-            setDistance(draft => {
-                draft.transform = `scaleX(${scaleX}) translateX(${slightOffset}px)`
-            })
-        } else {
-            setOffset(-(getCurrentOffset() - offset))
-            setDistance(draft => {
-                draft.transform = cssFormat(-(getCurrentOffset() - offset))
-            })
+        const originalDifferenceX = basePositionX - clientX
+        const differenceX = Math.abs(originalDifferenceX)
+        const differenceY = Math.abs(basePositionY - clientY)
+
+        if (!movementDirection) {
+            if (differenceX < 5 && differenceY > 5) {
+                movementDirection = "y"
+                console.log(movementDirection);
+            } else if (differenceY < 5 && differenceX > 5) {
+                movementDirection = "x"
+                console.log(movementDirection);
+            }
         }
+
+        if (movementDirection === "x")
+            return xSliding()
+        ySliding()
+
+        function ySliding() {
+            if (differenceY < 5) return
+        }
+
+        function xSliding() {
+            if (differenceX < 5) return
+            let offset = -originalDifferenceX
+            offset < 0 && (offset += 5)
+            offset > 0 && (offset -= 5)
+            const scaleX = Math.abs(offset / 100000) + 1
+            if (offset > 0 && currentIndex === 0) {
+                const slightOffset = offset / 30
+                setLimitState(slightOffset)
+            } else if (offset < 0 && currentIndex === swiperContainers.length - 1) {
+                offset = -offset
+                const slightOffset = -(getCurrentOffset() + offset / 30)
+                setLimitState(slightOffset)
+            } else {
+                setOffset({x: -(getCurrentOffset() - offset), y: 0})
+                setDistance(draft => {
+                    draft.transform = cssFormat(-(getCurrentOffset() - offset))
+                })
+            }
+
+            function setLimitState(slightOffset: number) {
+                setDistance(draft => {
+                    draft.transform = `scaleX(${scaleX}) translateX(${slightOffset}px)`
+                })
+            }
+        }
+
     }
 
     function cssFormat(offset: number, isHit: boolean = false): string {
@@ -97,14 +131,16 @@ export function Swiper({className, children}: SwiperProps): ReactNode {
         mouseStatus = "down"
         console.log("onMouseDown");
         swiperWidth = swiper.current!.clientWidth
-        baseXPosition = clientX
-        baseYPosition = clientY
+        basePositionX = clientX
+        basePositionY = clientY
         canCaptureMouseMove = true
         setActive("")
     }
 
     function hit() {
-        setOffset(-(getCurrentOffset()))
+        setOffset({
+            x: -(getCurrentOffset()), y: 0
+        })
         setDistance(draft => {
             draft.transform = cssFormat(currentIndex, true)
         })
